@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpiceShop - Merchant</title>
+    <style>
+        :root {
+            --font-size: 14px;
+            --background: #ffffff;
+            --foreground: #030213;
+            --card: #ffffff;
+            --card-foreground: #030213;
+            --primary: #030213;
+            --primary-foreground: #ffffff;
+            --secondary: #f3f3f5;
+            --secondary-foreground: #030213;
+            --muted: #ececf0;
+            --muted-foreground: #717182;
+            --accent: #e9ebef;
+            --accent-foreground: #030213;
+            --destructive: #d4183d;
+            --destructive-foreground: #ffffff;
+            border: rgba(0, 0, 0, 0.1);
+            --input-background: #f3f3f5;
+            --radius: 0.625rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: var(--font-size);
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.5;
+        }
+
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .flex-1 { flex: 1; }
+        .flex-col { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        
+        .p-0 { padding: 0; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .p-12 { padding: 3rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .px-8 { padding-left: 2rem; padding-right: 2rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .pl-10 { padding-left: 2.5rem; }
+        
+        .m-2 { margin: 0.5rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .mx-8 { margin-left: 2rem; margin-right: 2rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        
+        .w-full { width: 100%; }
+        .w-4 { width: 1rem; }
+        .w-5 { width: 1.25rem; }
+        .w-8 { width: 2rem; }
+        .w-10 { width: 2.5rem; }
+        .w-12 { width: 3rem; }
+        .w-16 { width: 4rem; }
+        .w-48 { width: 12rem; }
+        .max-w-md { max-width: 28rem; }
+        .max-w-lg { max-width: 32rem; }
+        .max-w-7xl { max-width: 80rem; }
+        
+        .h-4 { height: 1rem; }
+        .h-5 { height: 1.25rem; }
+        .h-8 { height: 2rem; }
+        .h-10 { height: 2.5rem; }
+        .h-12 { height: 3rem; }
+        .h-16 { height: 4rem; }
+        .h-full { height: 100%; }
+        .min-h-screen { min-height: 100vh; }
+        
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-base { font-size: 1rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-4xl { font-size: 2.25rem; }
+        
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        
+        .text-primary { color: var(--primary); }
+        .text-muted-foreground { color: var(--muted-foreground); }
+        .text-destructive { color: var(--destructive); }
+        .text-green-600 { color: #16a34a; }
+        .text-green-800 { color: #166534; }
+        .text-blue-800 { color: #1e40af; }
+        .text-orange-600 { color: #ea580c; }
+        .text-yellow-400 { color: #facc15; }
+        .text-gray-300 { color: #d1d5db; }
+        
+        .bg-background { background-color: var(--background); }
+        .bg-white { background-color: #ffffff; }
+        .bg-muted { background-color: var(--muted); }
+        .bg-primary { background-color: var(--primary); }
+        .bg-secondary { background-color: var(--secondary); }
+        .bg-destructive { background-color: var(--destructive); }
+        .bg-green-100 { background-color: #dcfce7; }
+        .bg-blue-50 { background-color: #eff6ff; }
+        
+        .border { border: 1px solid var(--border); }
+        .border-b { border-bottom: 1px solid var(--border); }
+        .border-t { border-top: 1px solid var(--border); }
+        .border-x { border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+        .border-blue-200 { border-color: #bfdbfe; }
+        
+        .rounded { border-radius: 0.25rem; }
+        .rounded-md { border-radius: 0.375rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        
+        .sticky { position: sticky; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .top-0 { top: 0; }
+        .top-2 { top: 0.5rem; }
+        .top-1\/2 { top: 50%; }
+        .left-2 { left: 0.5rem; }
+        .left-3 { left: 0.75rem; }
+        .-top-2 { top: -0.5rem; }
+        .-right-2 { right: -0.5rem; }
+        .z-50 { z-index: 50; }
+        
+        .transform { transform: translateZ(0); }
+        .-translate-y-1\/2 { transform: translateY(-50%); }
+        
+        .transition-colors { transition: color 0.15s ease-in-out; }
+        .transition-transform { transition: transform 0.15s ease-in-out; }
+        .transition-shadow { transition: box-shadow 0.15s ease-in-out; }
+        .duration-300 { transition-duration: 300ms; }
+        
+        .hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .hover\:text-primary:hover { color: var(--primary); }
+        .hover\:bg-secondary:hover { background-color: var(--secondary); }
+        .hover\:scale-105:hover { transform: scale(1.05); }
+        
+        .cursor-pointer { cursor: pointer; }
+        .line-through { text-decoration: line-through; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .overflow-hidden { overflow: hidden; }
+        .object-cover { object-fit: cover; }
+        
+        /* Custom Components */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1a1625;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--accent);
+        }
+        
+        .btn-ghost {
+            background-color: transparent;
+            color: var(--foreground);
+        }
+        
+        .btn-ghost:hover {
+            background-color: var(--accent);
+        }
+        
+        .btn-destructive {
+            background-color: var(--destructive);
+            color: var(--destructive-foreground);
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .input {
+            display: flex;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background-color: var(--input-background);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            outline: none;
+        }
+        
+        .input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(3, 2, 19, 0.1);
+        }
+        
+        .textarea {
+            min-height: 4rem;
+            resize: vertical;
+        }
+        
+        .select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+        
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-default {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .badge-secondary {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+        
+        .badge-destructive {
+            background-color: var(--destructive);
+            color: var(--destructive-foreground);
+        }
+        
+        .badge-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--foreground);
+        }
+        
+        .separator {
+            height: 1px;
+            background-color: var(--border);
+            width: 100%;
+        }
+        
+        .aspect-square {
+            aspect-ratio: 1 / 1;
+        }
+        
+        .star {
+            fill: currentColor;
+        }
+        
+        .star-filled {
+            color: #facc15;
+        }
+        
+        .star-empty {
+            color: #d1d5db;
+        }
+        
+        /* Icons */
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .sm\:flex-row { flex-direction: row; }
+            .sm\:items-center { align-items: center; }
+            .sm\:justify-between { justify-content: space-between; }
+            .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        }
+        
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .lg\:col-span-2 { grid-column: span 2 / span 2; }
+            .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+        }
+        
+        @media (min-width: 1280px) {
+            .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        
+        /* Tabs */
+        .tabs {
+            width: 100%;
+        }
+        
+        .tabs-list {
+            display: inline-flex;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            background-color: var(--muted);
+            padding: 0.25rem;
+        }
+        
+        .tabs-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: calc(var(--radius) - 2px);
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+        }
+        
+        .tabs-trigger.active {
+            background-color: var(--background);
+            color: var(--foreground);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .tabs-content {
+            margin-top: 0.5rem;
+            outline: none;
+        }
+        
+        /* Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .table th {
+            font-weight: 500;
+            color: var(--muted-foreground);
+        }
+
+        /* Inline Edit Fields */
+        .editable-field {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .editable-input {
+            width: 60px;
+            padding: 0.25rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background-color: var(--background);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            max-width: 28rem;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--muted);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Timeline for Tracking */
+        .timeline {
+            position: relative;
+            padding: 1rem 0 0 1rem;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: var(--muted);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 4px;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background-color: var(--muted);
+            border: 2px solid var(--background);
+            z-index: 1;
+        }
+
+        .timeline-item.completed:before {
+            background-color: #16a34a; /* green-600 */
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="min-h-screen bg-background">
+        <div id="login-page" class="min-h-screen flex items-center justify-center bg-muted">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold text-primary mb-2">Spicy</h1>
+                    <p class="text-muted-foreground">Manage your spice business</p>
+                </div>
+
+                <div class="card">
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold mb-2">Merchant Login</h2>
+                            <p class="text-muted-foreground">Sign in to your merchant account</p>
+                        </div>
+                        <form id="login-form" class="space-y-4">
+                            <div>
+                                <label for="login-email" class="block text-sm font-medium mb-2">Email</label>
+                                <input type="email" id="login-email" class="input" placeholder="merchant@spiceshop.com" required>
+                            </div>
+                            <div>
+                                <label for="login-password" class="block text-sm font-medium mb-2">Password</label>
+                                <input type="password" id="login-password" class="input" placeholder="••••••••" required>
+                            </div>
+                            <div class="space-y-3">
+                                <button type="submit" class="btn btn-primary w-full">
+                                    🏪 Login
+                                </button>
+                                <a href="customer.html" class="btn btn-secondary w-full text-center">
+                                    🛒 Go to Customer Site
+                                </a>
+                            </div>
+                        </form>
+                        <div class="text-center text-sm text-muted-foreground mt-4">
+                             CREATED BY ERROR!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <header id="app-header" class="bg-white border-b sticky top-0 z-50 hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl font-bold text-primary cursor-pointer" onclick="goToHome()">SpiceShop</h1>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <button id="nav-dashboard" class="btn btn-primary" onclick="showPage('merchant')">
+                            📊 Dashboard
+                        </button>
+                        <button id="nav-orders" class="btn btn-ghost" onclick="showPage('orders')">
+                            📦 Orders
+                        </button>
+                         <button id="nav-customers" class="btn btn-ghost" onclick="showPage('customers')">
+                            👥 Customers
+                        </button>
+                        <button class="btn btn-ghost" onclick="logout()">
+                            👤 Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+            <div id="merchant-page" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold mb-2" id="current-page-title">Merchant Dashboard</h1>
+                        <p class="text-muted-foreground" id="current-page-subtitle">Manage your spice inventory and track sales</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddProductModal()">
+                        ➕ Add New Product
+                    </button>
+                </div>
+
+                <div class="tabs">
+                    <div class="tabs-list mb-6">
+                        <button class="tabs-trigger active" onclick="switchDashboardTab('products')">1. Stock/Products</button>
+                        <button class="tabs-trigger" onclick="switchDashboardTab('analytics')">2. Sales/Revenue</button>
+                        <button class="tabs-trigger" onclick="switchDashboardTab('customers-quick')">3. Customers/Quantity</button>
+                    </div>
+
+                    <div id="dashboard-products" class="tabs-content">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                            <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">Active Products</h3>
+                                        <span class="text-muted-foreground">📦</span>
+                                    </div>
+                                    <div class="text-2xl font-bold" id="active-products">0</div>
+                                    <p class="text-xs text-muted-foreground" id="total-products">0 total products</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">Low Stock Alert</h3>
+                                        <span class="text-muted-foreground">⚠️</span>
+                                    </div>
+                                    <div class="text-2xl font-bold text-orange-600" id="low-stock">0</div>
+                                    <p class="text-xs text-muted-foreground">Products below 10 units</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">Orders Processing</h3>
+                                        <span class="text-muted-foreground">⚙️</span>
+                                    </div>
+                                    <div class="text-2xl font-bold" id="processing-orders">0</div>
+                                    <p class="text-xs text-muted-foreground">Awaiting shipment</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">Products Sold</h3>
+                                        <span class="text-muted-foreground">🛒</span>
+                                    </div>
+                                    <div class="text-2xl font-bold" id="total-sales">0</div>
+                                    <p class="text-xs text-muted-foreground">Total unit sales</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-6">
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold mb-4">Product Inventory (Stock)</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Category</th>
+                                                <th class="w-16">Price (₹)</th>
+                                                <th class="w-16">Stock</th>
+                                                <th>Sales</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="products-table-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dashboard-analytics" class="tabs-content hidden">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                             <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">Total Revenue</h3>
+                                        <span class="text-muted-foreground">💰</span>
+                                    </div>
+                                    <div class="text-2xl font-bold" id="total-revenue">₹0.00</div>
+                                    <p class="text-xs text-muted-foreground">Revenue generated (YTD)</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">Monthly Sales Trend</h3>
+                                        <span class="text-muted-foreground">📈</span>
+                                    </div>
+                                    <div class="text-2xl font-bold text-green-600">+12.5%</div>
+                                    <p class="text-xs text-muted-foreground">vs. Last Month</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">AOV (Avg Order Value)</h3>
+                                        <span class="text-muted-foreground">🏷️</span>
+                                    </div>
+                                    <div class="text-2xl font-bold" id="average-order-value">₹0.00</div>
+                                    <p class="text-xs text-muted-foreground">Average size of customer orders</p>
+                                </div>
+                            </div>
+                             <div class="card">
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium">Best Seller</h3>
+                                        <span class="text-muted-foreground">⭐</span>
+                                    </div>
+                                    <div class="text-sm font-bold text-primary" id="best-seller">N/A</div>
+                                    <p class="text-xs text-muted-foreground">Based on units sold</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="card">
+                                <div class="p-6">
+                                     <h3 class="text-lg font-semibold mb-4">Sales by Month</h3>
+                                     <canvas id="sales-chart"></canvas>
+                                </div>
+                            </div>
+                             <div class="card">
+                                <div class="p-6">
+                                    <h3 class="text-lg font-semibold mb-4">Top Selling Products (By Units)</h3>
+                                    <div id="top-products"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dashboard-customers-quick" class="tabs-content hidden">
+                        <div class="card">
+                             <div class="p-6">
+                                <h3 class="text-lg font-semibold mb-4">Customer Order Details Overview</h3>
+                                <div class="overflow-x-auto">
+                                     <table class="table">
+                                         <thead>
+                                             <tr>
+                                                 <th>Customer Name</th>
+                                                 <th>Last Order Total</th>
+                                                 <th>Product Ordered</th>
+                                                 <th>Quantity</th>
+                                                 <th>Last Order Status</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody id="recent-customer-orders-body">
+                                            </tbody>
+                                     </table>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="orders-page" class="hidden">
+                 <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold mb-2">Order Management</h1>
+                        <p class="text-muted-foreground">View and manage all customer orders</p>
+                    </div>
+                </div>
+                 <div id="orders-list" class="space-y-4"></div>
+            </div>
+
+            <div id="customers-page" class="hidden">
+                 <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold mb-2">Customer Management (Full List)</h1>
+                        <p class="text-muted-foreground">View and manage customer accounts</p>
+                    </div>
+                </div>
+                 <div class="card">
+                     <div class="p-6">
+                          <h3 class="text-lg font-semibold mb-4">Customer List</h3>
+                         <div class="overflow-x-auto">
+                             <table class="table">
+                                 <thead>
+                                     <tr>
+                                         <th>Name</th>
+                                         <th>Email</th>
+                                         <th>Total Orders</th>
+                                         <th>Total Spent</th>
+                                         <th>Actions</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="customers-table-body"></tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </main>
+
+        <div id="add-product-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Add New Product</h3>
+                    <button class="btn btn-ghost text-xl" onclick="hideAddProductModal()">×</button>
+                </div>
+                <form id="add-product-form" class="space-y-4">
+                    <div>
+                        <label for="product-name" class="block text-sm font-medium mb-2">Product Name</label>
+                        <input type="text" id="product-name" class="input" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="product-price" class="block text-sm font-medium mb-2">Price (₹)</label>
+                            <input type="number" id="product-price" class="input" step="0.01" required>
+                        </div>
+                        <div>
+                            <label for="product-stock" class="block text-sm font-medium mb-2">Stock Quantity</label>
+                            <input type="number" id="product-stock" class="input" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="product-category" class="block text-sm font-medium mb-2">Category</label>
+                        <select id="product-category" class="input select" required>
+                            <option value="">Select category</option>
+                            <option value="Powder">Powder</option>
+                            <option value="Whole Spices">Whole Spices</option>
+                            <option value="Blends">Blends</option>
+                            <option value="Seeds">Seeds</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="product-origin" class="block text-sm font-medium mb-2">Origin</label>
+                        <input type="text" id="product-origin" class="input" required>
+                    </div>
+                    <div>
+                        <label for="product-description" class="block text-sm font-medium mb-2">About / Description</label>
+                        <textarea id="product-description" class="input textarea" rows="3"></textarea>
+                    </div>
+                    <div>
+                        <label for="product-image-file" class="block text-sm font-medium mb-2">Product Image (Choose File)</label>
+                        <input type="file" id="product-image-file" class="input" accept="image/*">
+                        <input type="hidden" id="product-image" value="">
+                        <p class="text-xs text-muted-foreground mt-1">
+                            Note: In a real app, this file would be uploaded to a server/storage.
+                        </p>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Add Product</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="order-details-modal" class="modal hidden">
+            <div class="modal-content max-w-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Order Details</h3>
+                    <button class="btn btn-ghost text-xl" onclick="hideOrderDetailsModal()">×</button>
+                </div>
+                 <div id="order-details-content"></div>
+            </div>
+        </div>
+
+        <div id="update-status-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Update Order Status</h3>
+                    <button class="btn btn-ghost text-xl" onclick="hideUpdateStatusModal()">×</button>
+                </div>
+                <form id="update-status-form" class="space-y-4">
+                    <div>
+                        <label for="status-select" class="block text-sm font-medium mb-2">New Status</label>
+                        <select id="status-select" class="input select">
+                            <option value="Pending">Pending</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Nearest Hub">Nearest Hub</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Update Status</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="customer-history-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Customer Purchase History</h3>
+                    <button class="btn btn-ghost text-xl" onclick="hideCustomerHistoryModal()">×</button>
+                </div>
+                 <div id="customer-history-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="app-footer" class="bg-primary text-primary-foreground py-8 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-xs text-muted-foreground">
+                &copy; 2025 SpiceShop. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Global State
+        var isAuthenticated = false;
+        let selectedOrderId = null;
+        let selectedCustomerId = null;
+        let products = [
+            {
+                id: '1',
+                name: 'Organic Turmeric Powder',
+                price: 12.99 * 88.2,
+                originalPrice: 15.99 * 88.2,
+                rating: 4.8,
+                reviews: 124,
+                image: 'https://images.unsplash.com/photo-1698556735172-1b5b3cd9d2ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHx0dXJtZXJpYyUyMHBvd2RlciUyMHNwaWNlfGVufDF8fHx8MTc1NTQxODU1Nnww&ixlib=rb-4.1.0&q=80&w=400',
+                category: 'Powder',
+                origin: 'India',
+                weight: '100g',
+                inStock: true,
+                stockCount: 45,
+                isOrganic: true,
+                sales: 124
+            },
+            {
+                id: '2',
+                name: 'Ceylon Cinnamon Sticks',
+                price: 18.50 * 88.2,
+                rating: 4.9,
+                reviews: 89,
+                image: 'https://images.unsplash.com/photo-1622798337764-259682f03741?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxjaW5uYW1vbiUyMHN0aWNrcyUyMHNwaWNlfGVufDF8fHx8MTc1NTQxODU1N3ww&ixlib=rb-4.1.0&q=80&w=400',
+                category: 'Whole Spices',
+                origin: 'Sri Lanka',
+                weight: '50g',
+                inStock: true,
+                stockCount: 28,
+                sales: 89
+            },
+            {
+                id: '3',
+                name: 'Black Peppercorns',
+                price: 9.75 * 88.2,
+                rating: 4.7,
+                reviews: 203,
+                image: 'https://images.unsplash.com/photo-1649952052743-5e8f37c348c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxibGFjayUyMHBlcHBlciUyMHNwaWNlfGVufDF8fHx8MTc1NTQ4ODc5NXww&ixlib=rb-4.1.0&q=80&w=400',
+                category: 'Whole Spices',
+                origin: 'Vietnam',
+                weight: '75g',
+                inStock: true,
+                stockCount: 67,
+                sales: 203
+            },
+            {
+                id: '4',
+                name: 'Paprika Powder',
+                price: 7.25 * 88.2,
+                originalPrice: 9.99 * 88.2,
+                rating: 4.5,
+                reviews: 67,
+                image: 'https://images.unsplash.com/photo-1705475388190-775066fd69a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxzcGljZXMlMjBjb2xvcmZ1bCUyMHZhcmlldHl8ZW58MXx8fHwxNzU1NDg4NzkzfDA&ixlib=rb-4.1.0&q=80&w=400',
+                category: 'Powder',
+                origin: 'Hungary',
+                weight: '80g',
+                inStock: false,
+                stockCount: 0,
+                sales: 67
+            },
+            {
+                id: '5',
+                name: 'Cardamom Pods',
+                price: 24.99 * 88.2,
+                rating: 4.9,
+                reviews: 45,
+                image: 'https://images.unsplash.com/photo-1705475388190-775066fd69a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxzcGljZXMlMjBjb2xvcmZ1bCUyMHZhcmlldHl8ZW58MXx8fHwxNzU1NDg4NzkzfDA&ixlib=rb-4.1.0&q=80&w=400',
+                category: 'Whole Spices',
+                origin: 'Guatemala',
+                weight: '40g',
+                inStock: true,
+                stockCount: 15,
+                isOrganic: true,
+                sales: 45
+            },
+            {
+                id: '6',
+                name: 'Star Anise',
+                price: 13.50 * 88.2,
+                rating: 4.6,
+                reviews: 78,
+                image: 'https://images.unsplash.com/photo-1705475388190-775066fd69a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxzcGljZXMlMjBjb2xvcmZ1bCUyMHZhcmlldHl8ZW58MXx8fHwxNzU1NDg4NzkzfDA&ixlib=rb-4.1.0&q=80&w=400',
+                category: 'Whole Spices',
+                origin: 'China',
+                weight: '60g',
+                inStock: true,
+                stockCount: 32,
+                sales: 78
+            }
+        ];
+        let orders = [
+             {
+                id: 'ORD-001',
+                date: '2025-09-10',
+                total: 21.74 * 88.2,
+                status: 'Shipped',
+                customer: { id: 'CUST-001', name: 'Alia Bhatt', email: 'alia@example.com' },
+                tracking: 'TRACK-12345',
+                items: [
+                    { name: 'Organic Turmeric Powder', quantity: 1, price: 12.99 * 88.2 },
+                    { name: 'Paprika Powder', quantity: 1, price: 7.25 * 88.2 }
+                ],
+                trackingHistory: [
+                    { date: '2025-09-10', time: '14:30', status: 'Pending', location: 'SpiceShop HQ' },
+                    { date: '2025-09-10', time: '16:00', status: 'Shipped', location: 'Warehouse' }
+                ]
+            },
+            {
+                id: 'ORD-002',
+                date: '2025-08-25',
+                total: 19.50 * 88.2,
+                status: 'Delivered',
+                customer: { id: 'CUST-002', name: 'Rahul Sharma', email: 'rahul@example.com' },
+                tracking: 'TRACK-67890',
+                items: [
+                    { name: 'Black Peppercorns', quantity: 2, price: 9.75 * 88.2 }
+                ],
+                trackingHistory: [
+                    { date: '2025-08-25', time: '10:00', status: 'Pending', location: 'SpiceShop HQ' },
+                    { date: '2025-08-25', time: '11:45', status: 'Shipped', location: 'Warehouse' },
+                    { date: '2025-08-26', time: '08:00', status: 'Nearest Hub', location: 'Shipping Hub' },
+                    { date: '2025-08-28', time: '18:10', status: 'Delivered', location: 'Customer Address' }
+                ]
+            },
+            {
+                id: 'ORD-003',
+                date: '2025-10-18',
+                total: 35.40 * 88.2,
+                status: 'Processing',
+                customer: { id: 'CUST-001', name: 'Alia Bhatt', email: 'alia@example.com' },
+                tracking: 'TRACK-99887',
+                items: [
+                    { name: 'Cardamom Pods', quantity: 1, price: 24.99 * 88.2 },
+                    { name: 'Ceylon Cinnamon Sticks', quantity: 1, price: 18.50 * 88.2 }
+                ],
+                trackingHistory: [
+                    { date: '2025-10-18', time: '10:15', status: 'Pending', location: 'Website' },
+                    { date: '2025-10-18', time: '11:00', status: 'Processing', location: 'Warehouse' }
+                ]
+            }
+        ];
+        let customers = [
+             { id: 'CUST-001', name: 'Alia Bhatt', email: 'alia@example.com', totalOrders: 2, totalSpent: (21.74 + 35.40) * 88.2 },
+             { id: 'CUST-002', name: 'Rahul Sharma', email: 'rahul@example.com', totalOrders: 1, totalSpent: 19.50 * 88.2 },
+        ];
+
+
+        // Utility Functions
+        function showElement(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function hideElement(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function formatPrice(price) {
+            return `₹${price.toFixed(2)}`;
+        }
+
+        function showLoader() {
+             const loader = document.createElement('div');
+             loader.id = 'page-loader';
+             loader.className = 'modal';
+             loader.innerHTML = `<div class="p-8 bg-white rounded-lg"><div class="loading"></div><p class="mt-2 text-sm text-muted-foreground">Processing...</p></div>`;
+             document.body.appendChild(loader);
+        }
+
+        function hideLoader() {
+             const loader = document.getElementById('page-loader');
+             if (loader) loader.remove();
+        }
+
+        // Authentication Functions
+        function login() {
+            // In a real app, this verifies username/password against the database
+            isAuthenticated = true; 
+            hideElement('login-page');
+            showElement('app-header');
+            showElement('main-content');
+            showElement('app-footer');
+            showPage('merchant'); // Default to merchant dashboard/products
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            hideElement('app-header');
+            hideElement('main-content');
+            hideElement('app-footer');
+            showElement('login-page');
+        }
+
+        function goToHome() {
+            showPage('merchant');
+        }
+
+        // Page Navigation
+        function showPage(page) {
+            hideElement('merchant-page');
+            hideElement('orders-page');
+            hideElement('customers-page');
+
+             document.querySelectorAll('#app-header .btn').forEach(btn => btn.className = 'btn btn-ghost');
+             if (page === 'merchant') document.getElementById('nav-dashboard').className = 'btn btn-primary';
+             if (page === 'orders') document.getElementById('nav-orders').className = 'btn btn-primary';
+             if (page === 'customers') document.getElementById('nav-customers').className = 'btn btn-primary';
+
+            switch (page) {
+                case 'merchant':
+                    showElement('merchant-page');
+                    switchDashboardTab('products'); // **UPDATED: Default to Products (Stock) tab**
+                    break;
+                case 'orders':
+                    showElement('orders-page');
+                    renderOrdersTable();
+                    break;
+                case 'customers':
+                    showElement('customers-page');
+                    renderCustomersTable(); // Full customer list
+                    break;
+            }
+        }
+
+        // Merchant Dashboard Functions
+        function switchDashboardTab(tab) {
+            // Hide all dashboard content areas
+            hideElement('dashboard-products');
+            hideElement('dashboard-analytics');
+            hideElement('dashboard-customers-quick');
+            
+            const triggers = document.querySelectorAll('#merchant-page .tabs-trigger');
+            triggers.forEach(t => t.classList.remove('active'));
+
+            const titles = {
+                'products': { title: 'Product Inventory & Stock', subtitle: 'View and manage your current stock levels. Double-click price/stock to edit.' },
+                'analytics': { title: 'Sales & Revenue Analytics', subtitle: 'Track your total revenue, sales trends, and profitability.' },
+                'customers-quick': { title: 'Recent Customer Order Details', subtitle: 'Quick view of recent customer purchases and quantities.' }
+            };
+
+            document.getElementById('current-page-title').textContent = titles[tab].title;
+            document.getElementById('current-page-subtitle').textContent = titles[tab].subtitle;
+
+            let triggerIndex;
+            switch (tab) {
+                case 'products':
+                    showElement('dashboard-products');
+                    triggerIndex = 0;
+                    updateDashboardStats();
+                    renderProductsTable();
+                    break;
+                case 'analytics':
+                    showElement('dashboard-analytics');
+                    triggerIndex = 1;
+                    updateDashboardStats(); // Recalculate stats like AOV and Best Seller
+                    renderAnalytics();
+                    break;
+                case 'customers-quick':
+                    showElement('dashboard-customers-quick');
+                    triggerIndex = 2;
+                    renderRecentCustomerOrders();
+                    break;
+            }
+            triggers[triggerIndex].classList.add('active');
+        }
+
+        function updateDashboardStats() {
+            const totalRevenue = products.reduce((sum, p) => sum + (p.price * p.sales), 0);
+            const totalSales = products.reduce((sum, p) => sum + p.sales, 0);
+            const activeProducts = products.filter(p => p.inStock).length;
+            const lowStockProducts = products.filter(p => p.stockCount < 10 && p.stockCount > 0).length;
+            // Orders still 'Processing' is now 'Pending' or 'Processing'
+            const processingOrders = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
+            
+            const totalOrderValue = orders.reduce((sum, o) => sum + o.total, 0);
+            const averageOrderValue = orders.length > 0 ? totalOrderValue / orders.length : 0;
+            
+            const bestSellerProduct = [...products].sort((a, b) => b.sales - a.sales)[0];
+
+            document.getElementById('total-revenue').textContent = formatPrice(totalRevenue);
+            document.getElementById('total-sales').textContent = totalSales;
+            document.getElementById('active-products').textContent = activeProducts;
+            document.getElementById('total-products').textContent = `${products.length} total products`;
+            document.getElementById('low-stock').textContent = lowStockProducts;
+            document.getElementById('processing-orders').textContent = processingOrders;
+            document.getElementById('average-order-value').textContent = formatPrice(averageOrderValue);
+            document.getElementById('best-seller').textContent = bestSellerProduct ? bestSellerProduct.name : 'N/A';
+        }
+
+        function renderProductsTable() {
+            const tbody = document.getElementById('products-table-body');
+            tbody.innerHTML = products.map(product => `
+                <tr>
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-muted">
+                                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                            </div>
+                            <span class="font-medium">${product.name}</span>
+                        </div>
+                    </td>
+                    <td>${product.category}</td>
+                    <td id="price-${product.id}" ondblclick="editPrice('${product.id}')">
+                        <span class="price-display-${product.id}">${formatPrice(product.price)}</span>
+                        <div class="editable-field hidden price-input-${product.id}">
+                            <input type="number" id="input-price-${product.id}" class="editable-input" value="${product.price.toFixed(2)}" step="0.01">
+                            <button class="btn btn-primary btn-sm" onclick="savePrice('${product.id}')">💾</button>
+                        </div>
+                    </td>
+                    <td id="stock-${product.id}" ondblclick="editStock('${product.id}')">
+                        <span class="stock-display-${product.id}">
+                            <span class="badge ${product.stockCount > 10 ? 'badge-default' : product.stockCount > 0 ? 'badge-destructive' : 'badge-secondary'}">
+                                ${product.stockCount}
+                            </span>
+                        </span>
+                        <div class="editable-field hidden stock-input-${product.id}">
+                            <input type="number" id="input-stock-${product.id}" class="editable-input" value="${product.stockCount}">
+                            <button class="btn btn-primary btn-sm" onclick="saveStock('${product.id}')">💾</button>
+                        </div>
+                    </td>
+                    <td>${product.sales}</td>
+                    <td>
+                        <span class="badge ${product.inStock ? 'badge-default' : 'badge-secondary'}">
+                            ${product.inStock ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <button class="btn btn-ghost btn-sm" onclick="toggleProductStatus('${product.id}')">
+                                ${product.inStock ? 'Deactivate' : 'Activate'}
+                            </button>
+                            <button class="btn btn-ghost btn-sm text-destructive" onclick="deleteProduct('${product.id}')">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // **NEW: Inline Edit Functions**
+        function editPrice(id) {
+            document.querySelector(`.price-display-${id}`).classList.add('hidden');
+            document.querySelector(`.price-input-${id}`).classList.remove('hidden');
+            document.getElementById(`input-price-${id}`).focus();
+        }
+
+        function savePrice(id) {
+            const product = products.find(p => p.id === id);
+            const newPrice = parseFloat(document.getElementById(`input-price-${id}`).value);
+            
+            if (product && !isNaN(newPrice) && newPrice >= 0) {
+                product.price = newPrice;
+                alert(`Price for ${product.name} updated to ${formatPrice(newPrice)}`);
+                renderProductsTable();
+                updateDashboardStats();
+            } else {
+                 alert('Invalid price entered.');
+            }
+        }
+        
+        function editStock(id) {
+            document.querySelector(`.stock-display-${id}`).classList.add('hidden');
+            document.querySelector(`.stock-input-${id}`).classList.remove('hidden');
+            document.getElementById(`input-stock-${id}`).focus();
+        }
+
+        function saveStock(id) {
+            const product = products.find(p => p.id === id);
+            const newStock = parseInt(document.getElementById(`input-stock-${id}`).value);
+            
+            if (product && !isNaN(newStock) && newStock >= 0) {
+                product.stockCount = newStock;
+                product.inStock = newStock > 0;
+                alert(`Stock for ${product.name} updated to ${newStock} units.`);
+                renderProductsTable();
+                updateDashboardStats();
+            } else {
+                 alert('Invalid stock quantity entered.');
+            }
+        }
+        // **END NEW: Inline Edit Functions**
+
+        function renderAnalytics() {
+            // Top selling products
+            const topProducts = [...products].sort((a, b) => b.sales - a.sales).slice(0, 5);
+            document.getElementById('top-products').innerHTML = topProducts.map((product, index) => `
+                <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-muted-foreground">#${index + 1}</span>
+                        <span class="font-medium">${product.name}</span>
+                    </div>
+                    <span class="text-sm text-muted-foreground">${product.sales} units sold</span>
+                </div>
+            `).join('');
+            
+            // Sales chart (placeholder data)
+            const salesData = {
+                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                 datasets: [{
+                     label: 'Total Revenue (₹)',
+                     data: [1500, 2200, 1800, 2500, 3100, 2800, 3500, 4200, 5100, 4800],
+                     borderColor: '#030213',
+                     tension: 0.4,
+                     fill: false
+                 }]
+            };
+            const salesConfig = {
+                 type: 'line',
+                 data: salesData,
+                 options: {
+                     responsive: true,
+                     plugins: { legend: { display: false } },
+                     scales: { y: { beginAtZero: true } }
+                 }
+            };
+            const salesChartCtx = document.getElementById('sales-chart').getContext('2d');
+            if (window.salesChart) window.salesChart.destroy();
+            window.salesChart = new Chart(salesChartCtx, salesConfig);
+        }
+        
+        // Render Recent Customer Orders for the Customers/Quantity Tab
+        function renderRecentCustomerOrders() {
+            const tbody = document.getElementById('recent-customer-orders-body');
+            // Get the last 5 orders, sorting by date descending
+            const recentOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            
+            if (recentOrders.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted-foreground py-4">No recent orders to display.</td></tr>';
+                 return;
+            }
+
+            tbody.innerHTML = recentOrders.map(order => {
+                const firstItem = order.items[0];
+                const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+                return `
+                    <tr>
+                        <td class="font-medium">${order.customer.name}</td>
+                        <td class="font-semibold">${formatPrice(order.total)}</td>
+                        <td>${firstItem.name} ${order.items.length > 1 ? ` (+${order.items.length - 1} more)` : ''}</td>
+                        <td>${totalItems} units</td>
+                        <td>
+                            <span class="badge badge-secondary">${order.status}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function showAddProductModal() {
+            showElement('add-product-modal');
+        }
+
+        function hideAddProductModal() {
+            hideElement('add-product-modal');
+            document.getElementById('add-product-form').reset();
+            // Clear simulated file path on modal close
+            document.getElementById('product-image-file').value = '';
+        }
+
+        function toggleProductStatus(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.inStock = !product.inStock;
+                renderProductsTable();
+                updateDashboardStats();
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                products = products.filter(p => p.id !== id);
+                renderProductsTable();
+                updateDashboardStats();
+            }
+        }
+
+        // Order Management Functions
+        function renderOrdersTable() {
+             const ordersList = document.getElementById('orders-list');
+             if (orders.length === 0) {
+                 ordersList.innerHTML = '<div class="card p-12 text-center text-muted-foreground">No orders have been placed yet.</div>';
+                 return;
+             }
+
+             ordersList.innerHTML = orders.map(order => `
+                 <div class="card p-6">
+                     <div class="flex justify-between items-center mb-4">
+                         <div class="space-y-1">
+                             <h4 class="font-semibold">Order #${order.id}</h4>
+                             <p class="text-sm text-muted-foreground">Placed on ${order.date}</p>
+                         </div>
+                         <div class="text-right">
+                             <span class="font-bold text-lg">${formatPrice(order.total)}</span>
+                             <span class="block text-sm text-muted-foreground">${order.status}</span>
+                         </div>
+                     </div>
+                     <div class="flex items-center gap-4 mb-4">
+                         <p class="font-medium">Customer: ${order.customer.name}</p>
+                     </div>
+                      <div class="flex justify-end gap-2">
+                        <button class="btn btn-secondary btn-sm" onclick="showOrderDetailsModal('${order.id}')">View Details</button>
+                        <button class="btn btn-primary btn-sm" onclick="showUpdateStatusModal('${order.id}')">Update Status</button>
+                    </div>
+                 </div>
+             `).join('');
+        }
+
+        function showOrderDetailsModal(orderId) {
+             selectedOrderId = orderId;
+             const order = orders.find(o => o.id === orderId);
+             if (!order) return;
+
+             const orderDetailsContent = document.getElementById('order-details-content');
+             orderDetailsContent.innerHTML = `
+                 <p class="text-sm text-muted-foreground mb-2">Order ID: <span class="font-semibold text-foreground">${order.id}</span></p>
+                 <p class="text-sm text-muted-foreground mb-4">Placed on: <span class="font-semibold text-foreground">${order.date}</span></p>
+                 <p class="text-sm text-muted-foreground mb-4">Customer: <span class="font-semibold text-foreground">${order.customer.name} (${order.customer.email})</span></p>
+                 <div class="card p-4">
+                     <h4 class="font-semibold mb-2">Items</h4>
+                     ${order.items.map(item => `
+                         <div class="flex justify-between text-sm py-1">
+                             <span>${item.name} x${item.quantity}</span>
+                             <span>${formatPrice(item.price * item.quantity)}</span>
+                         </div>
+                     `).join('')}
+                 </div>
+                 <div class="flex justify-between font-bold text-lg mt-4">
+                     <span>Total</span>
+                     <span>${formatPrice(order.total)}</span>
+                 </div>
+             `;
+             showElement('order-details-modal');
+        }
+
+        function hideOrderDetailsModal() {
+             hideElement('order-details-modal');
+        }
+
+        function showUpdateStatusModal(orderId) {
+             selectedOrderId = orderId;
+             const order = orders.find(o => o.id === orderId);
+             if (order) {
+                 document.getElementById('status-select').value = order.status === 'Processing' ? 'Pending' : order.status;
+             }
+             showElement('update-status-modal');
+        }
+
+        function hideUpdateStatusModal() {
+             hideElement('update-status-modal');
+        }
+
+        // Customer Management Functions (Full List)
+        function renderCustomersTable() {
+             const tbody = document.getElementById('customers-table-body');
+             if (customers.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted-foreground py-4">No customers found.</td></tr>';
+                 return;
+             }
+             tbody.innerHTML = customers.map(customer => `
+                 <tr>
+                     <td>${customer.name}</td>
+                     <td>${customer.email}</td>
+                     <td>${customer.totalOrders}</td>
+                     <td>${formatPrice(customer.totalSpent)}</td>
+                     <td>
+                         <button class="btn btn-ghost btn-sm" onclick="showCustomerHistoryModal('${customer.id}')">View History</button>
+                     </td>
+                 </tr>
+             `).join('');
+        }
+
+        function showCustomerHistoryModal(customerId) {
+             selectedCustomerId = customerId;
+             const customer = customers.find(c => c.id === customerId);
+             if (!customer) return;
+
+             const customerOrders = orders.filter(o => o.customer.id === customerId);
+             const historyContent = document.getElementById('customer-history-content');
+             historyContent.innerHTML = `
+                 <h4 class="font-semibold text-lg mb-2">Orders for ${customer.name}</h4>
+                 <p class="text-sm text-muted-foreground mb-4">Total Orders: ${customer.totalOrders} | Total Spent: ${formatPrice(customer.totalSpent)}</p>
+                 ${customerOrders.length > 0 ? customerOrders.map(order => `
+                     <div class="card p-4 mb-2">
+                         <div class="flex justify-between items-center">
+                             <div class="space-y-1">
+                                 <p class="font-medium">Order #${order.id}</p>
+                                 <p class="text-xs text-muted-foreground">Status: ${order.status}</p>
+                             </div>
+                             <span class="font-semibold">${formatPrice(order.total)}</span>
+                         </div>
+                     </div>
+                 `).join('') : '<p class="text-muted-foreground">No purchase history found.</p>'}
+             `;
+             showElement('customer-history-modal');
+        }
+
+        function hideCustomerHistoryModal() {
+             hideElement('customer-history-modal');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+            
+            // Add product form
+            document.getElementById('add-product-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showLoader();
+                
+                // --- Image Simulation Logic ---
+                const imageFile = document.getElementById('product-image-file').files[0];
+                let imageUrl = 'https://images.unsplash.com/photo-1705475388190-775066fd69a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxzcGljZXMlMjBjb2xvcmZ1bCUyMHZhcmlldHl8ZW58MXx8fHwxNzU1NDg4NzkzfDA&ixlib=rb-4.1.0&q=80&w=400';
+                
+                if (imageFile) {
+                    // For a real app, this file would be uploaded to a server, which returns a public URL.
+                    // Here, we simulate it by creating a temporary object URL.
+                    imageUrl = URL.createObjectURL(imageFile);
+                    console.log(`Simulating upload for: ${imageFile.name}. Temporary URL created: ${imageUrl}`);
+                }
+                // -----------------------------
+
+                setTimeout(() => {
+                    hideLoader();
+                    const newProduct = {
+                        id: Date.now().toString(),
+                        name: document.getElementById('product-name').value,
+                        price: parseFloat(document.getElementById('product-price').value),
+                        category: document.getElementById('product-category').value,
+                        origin: document.getElementById('product-origin').value,
+                        weight: '100g', // Default value
+                        stockCount: parseInt(document.getElementById('product-stock').value),
+                        inStock: true,
+                        description: document.getElementById('product-description').value,
+                        image: imageUrl, // Use the simulated URL
+                        rating: 4.5,
+                        reviews: 0,
+                        sales: 0
+                    };
+                    
+                    products.push(newProduct);
+                    alert('New product added successfully!');
+                    hideAddProductModal();
+                    renderProductsTable();
+                    updateDashboardStats();
+                }, 1000); // Simulate API loading
+            });
+
+             // Update status form
+             document.getElementById('update-status-form').addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  showLoader();
+                  setTimeout(() => {
+                       hideLoader();
+                       const newStatus = document.getElementById('status-select').value;
+                       const order = orders.find(o => o.id === selectedOrderId);
+                       if (order) {
+                           // Update Processing to Pending if that's the new status for simplicity
+                           order.status = newStatus === 'Pending' && order.status === 'Processing' ? 'Processing' : newStatus;
+                           order.status = newStatus;
+                           
+                           // Add new entry to tracking history
+                           const now = new Date();
+                           order.trackingHistory.push({
+                                date: now.toISOString().slice(0, 10),
+                                time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                                status: newStatus,
+                                location: newStatus === 'Nearest Hub' ? 'Local Delivery Center' : 'Shipping Hub' 
+                           });
+                           alert(`Order #${selectedOrderId} status updated to ${newStatus}.`);
+                           hideUpdateStatusModal();
+                           renderOrdersTable();
+                           updateDashboardStats(); // Update Processing count
+                       }
+                  }, 1000); // Simulate API loading
+             });
+
+            // Close modal when clicking outside
+            document.getElementById('add-product-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideAddProductModal();
+                }
+            });
+
+            document.getElementById('order-details-modal').addEventListener('click', function(e) {
+                 if (e.target === this) {
+                     hideOrderDetailsModal();
+                 }
+            });
+
+            document.getElementById('update-status-modal').addEventListener('click', function(e) {
+                 if (e.target === this) {
+                     hideUpdateStatusModal();
+                 }
+            });
+
+             document.getElementById('customer-history-modal').addEventListener('click', function(e) {
+                  if (e.target === this) {
+                      hideCustomerHistoryModal();
+                  }
+             });
+        });
+        // --- Configuration ---
+        // Use relative API path so frontend works when served from backend
+        const API_BASE_URL = '/api'; 
+var isAuthenticated = localStorage.getItem('token') ? true : false;
+let userRole = localStorage.getItem('role') || 'guest';
+let currentUser = {}; // To store the logged-in user's profile data
+
+// --- Core Helper Functions ---
+
+// 1. JWT Authentication Header Helper
+function getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // This sends the token to the backend
+    };
+}
+
+// 2. Generic API Request Function
+async function makeAuthRequest(endpoint, method = 'GET', body = null) {
+    const config = { 
+        method, 
+        headers: getAuthHeaders() 
+    };
+    
+    if (body) {
+        config.body = JSON.stringify(body);
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+        const data = await response.json();
+        
+        if (response.status === 401 || response.status === 403) {
+            // Handle unauthorized or forbidden access
+            alert("Session expired or unauthorized access. Logging out.");
+            logout(); 
+            return;
+        }
+        
+        if (!response.ok) {
+            throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+        }
+        return data;
+
+    } catch (error) {
+        console.error(`API Call to ${endpoint} Failed:`, error);
+        alert(`Request Failed: ${error.message}`);
+        throw error;
+    }
+}
+
+// 3. Logout Function
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    isAuthenticated = false;
+    userRole = 'guest';
+    // Redirect to the respective login page
+    window.location.href = `${userRole}.html` || 'customer.html'; 
+}
+
+// 4. Initialization (MUST BE CALLED ON PAGE LOAD)
+function initApp(requiredRole = 'customer') {
+    // Basic role check redirection
+    if (!isAuthenticated || userRole !== requiredRole) {
+        if (requiredRole === 'customer') {
+             // Show customer login page if not logged in
+            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('main-content')?.classList.add('hidden');
+        } else {
+             // Redirect unauthorized users to customer login
+             alert(`Access Denied. Log in as ${requiredRole}.`);
+             window.location.href = 'customer.html';
+        }
+        return;
+    }
+
+    // Hide login and show main content for authenticated users
+    document.getElementById('login-page')?.classList.add('hidden');
+    document.getElementById('app-header')?.classList.remove('hidden');
+    document.getElementById('main-content')?.classList.remove('hidden');
+
+    // Fetch initial data based on role
+    if (requiredRole === 'customer') {
+        fetchUserProfile();
+        showPage('catalog-page');
+    } else if (requiredRole === 'merchant') {
+        fetchMyProducts();
+        fetchMerchantOrders();
+    } else if (requiredRole === 'admin') {
+        fetchPendingMerchants();
+    }
+}
+// --- Merchant Specific Functions (Place in merchant.html) ---
+
+// 1. Initial Check
+document.addEventListener('DOMContentLoaded', () => {
+    initApp('merchant'); 
+});
+
+// 2. Product Management (Connects to /api/merchant/products)
+async function fetchMyProducts() {
+    // GET /api/merchant/products
+    try {
+        const products = await makeAuthRequest('/merchant/products');
+        // Implement renderProductList(products) to populate the merchant's catalog table
+    } catch (error) {
+        document.getElementById('merchant-product-list').innerHTML = 
+            '<p class="text-destructive p-4">Error loading your products.</p>';
+    }
+}
+
+async function handleProductForm(e) {
+    e.preventDefault();
+    const isEditing = e.target.dataset.productId;
+    const formData = {
+        name: document.getElementById('product-name').value,
+        price: parseFloat(document.getElementById('product-price').value),
+        stock_quantity: parseInt(document.getElementById('product-stock').value),
+        // ... gather all other product fields
+    };
+
+    try {
+        if (isEditing) {
+            // PUT /api/merchant/products/:id
+            await makeAuthRequest(`/merchant/products/${isEditing}`, 'PUT', formData);
+            alert('Product updated!');
+        } else {
+            // POST /api/merchant/products
+            await makeAuthRequest('/merchant/products', 'POST', formData);
+            alert('New product added!');
+        }
+        fetchMyProducts();
+    } catch (error) {
+        alert('Operation failed: ' + error.message);
+    }
+}
+
+// 3. Order Fulfillment (Connects to /api/merchant/orders)
+async function fetchMerchantOrders() {
+    // GET /api/merchant/orders
+    try {
+        const orders = await makeAuthRequest('/merchant/orders');
+        // Implement renderMerchantOrders(orders) to show customer details, products, and status
+    } catch (error) {
+        document.getElementById('merchant-orders-list').innerHTML = 
+            '<p class="text-destructive p-4">Error loading customer orders.</p>';
+    }
+}
+
+async function updateOrderStatus(orderId, newStatus) {
+    // PUT /api/merchant/orders/:id/status
+    try {
+        await makeAuthRequest(`/merchant/orders/${orderId}/status`, 'PUT', { status: newStatus });
+        alert(`Order ${orderId} updated to ${newStatus}.`);
+        fetchMerchantOrders(); // Refresh the list
+    } catch (error) {
+        alert('Failed to update status.');
+    }
+}
+
+// You will need to create the merchant.html structure with forms/tables that reference these JS functions.
+    </script>
+</body>
+</html>
